@@ -9,19 +9,21 @@ export class App {
     private routes: Routes;
     private config: EnvConfigService;
     private models: Models;
+
     constructor() {
         this.config = new EnvConfigService();
         this.models = new Models();
         this.app = express();
         this.routes = new Routes(this.models, this.config);
     }
-    
+
     public async start() {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use('/', this.routes.default);
         this.app.listen(this.config.Port, () => {
-            console.log('Server started at port: ' + this.config.Port);
+            // eslint-disable-next-line no-console
+            console.log(`Server started at port: ${this.config.Port}`);
         });
     }
 }

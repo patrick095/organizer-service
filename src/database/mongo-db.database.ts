@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
-import { EnvConfigService } from "../configs/env.config";
-
+import mongoose from 'mongoose';
+import { EnvConfigService } from '../configs/env.config';
 
 export class MongoDB {
     private MongoURL: string;
@@ -10,7 +9,8 @@ export class MongoDB {
 
     public async connect() {
         mongoose.connect(this.MongoURL).then(() => {
-            console.log("MongoDB connected");
+            // eslint-disable-next-line no-console
+            console.log('MongoDB connected');
         });
         return mongoose;
     }

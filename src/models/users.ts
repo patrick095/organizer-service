@@ -1,40 +1,38 @@
-import { Model, Schema } from "mongoose"
-import { MongoDB } from "src/database/mongo-db.database";
-import { UserSchemaInterface } from "../interfaces/user.interface"
+import { Model, Schema } from 'mongoose';
+import { MongoDB } from 'src/database/mongo-db.database';
+import { UserSchemaInterface } from '../interfaces/user.interface';
 
 export class UserModel extends MongoDB {
-    public register(): Promise<Model<UserSchemaInterface>> {        
+    public register(): Promise<Model<UserSchemaInterface>> {
         const UserSchema = new Schema<UserSchemaInterface>({
-            name: { 
+            name: {
                 type: String,
-                required: true
+                required: true,
             },
             user: {
                 type: String,
-                required: true
+                required: true,
             },
-            password: { 
+            password: {
                 type: String,
-                required: true
+                required: true,
             },
             email: {
                 type: String,
-                required: true
+                required: true,
             },
-            sessions:{
+            sessions: {
                 type: [String],
-                default: []
+                default: [],
             },
-            theme:{
+            theme: {
                 type: Object,
                 default: {
-                    bgColor: "#4266b9",
-                    fontColor: "#fff"
-                }
-            }
-        })
-        return this.connect().then(db => {
-            return db.model<UserSchemaInterface>('users', UserSchema);
-        })
+                    bgColor: '#4266b9',
+                    fontColor: '#fff',
+                },
+            },
+        });
+        return this.connect().then((db) => db.model<UserSchemaInterface>('users', UserSchema));
     }
 }

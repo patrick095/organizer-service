@@ -1,10 +1,9 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
 
 export interface SignInInterface {
     user: string;
     password: string;
 }
-
 
 export interface UserSchemaInterface extends Document {
     name: string;
