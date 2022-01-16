@@ -8,9 +8,9 @@ export class MongoDB {
     }
 
     public async connect() {
-        mongoose.connect(this.MongoURL).then(() => {
-            // eslint-disable-next-line no-console
+        await mongoose.connect(this.MongoURL).then((connection) => {
             console.log('MongoDB connected');
+            return connection;
         });
         return mongoose;
     }

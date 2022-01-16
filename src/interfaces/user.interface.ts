@@ -23,3 +23,17 @@ export interface UserSchemaInterface extends Document {
         fontColor: string;
     }
 }
+
+export interface DataSchemaInterface extends Document {
+    userId: string;
+    objects: Array<DataObject>;
+}
+
+export interface DataObject {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    date: Date;
+    theme: string;
+}

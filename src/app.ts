@@ -21,6 +21,7 @@ export class App {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use('/', this.routes.default);
+        this.app.use('/auth', this.routes.auth);
         this.app.listen(this.config.Port, () => {
             // eslint-disable-next-line no-console
             console.log(`Server started at port: ${this.config.Port}`);

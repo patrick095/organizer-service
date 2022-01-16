@@ -17,7 +17,7 @@ export class UserController {
         this.salt = this.config.bcryptSalt;
     }
 
-    public async getUserModel(): Promise<void> {
+    private async getUserModel(): Promise<void> {
         this.Users = await this.userModel.register();
     }
 
