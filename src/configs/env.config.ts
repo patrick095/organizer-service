@@ -14,4 +14,8 @@ export class EnvConfigService {
     public get Port(): number {
         return Number(process.env.PORT);
     }
+
+    public get bcryptSalt(): number {
+        return Number(process.env.BCRYPT_SALT);
+    }
 }

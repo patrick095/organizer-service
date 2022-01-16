@@ -5,13 +5,20 @@ export interface SignInInterface {
     password: string;
 }
 
+export interface UpdateUserInterface {
+    name: string;
+    user: string;
+    email: string;
+    password: string;
+}
+
 export interface UserSchemaInterface extends Document {
     name: string;
     user: string;
-    password: string;
+    password?: string;
     email: string;
-    sessions: Array<string>;
-    theme:{
+    sessions?: Array<string>;
+    theme?:{
         bgColor: string;
         fontColor: string;
     }

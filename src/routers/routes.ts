@@ -16,6 +16,8 @@ export class Routes {
             res.send('unalthorized');
         });
         this.routes.post('/login', this.userController.signin.bind(this.userController));
+        this.routes.post('/cadastrar', this.userController.signup.bind(this.userController));
+        this.routes.post('/atualizar', this.userController.updateUser.bind(this.userController));
 
         return this.routes;
     }
