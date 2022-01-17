@@ -10,7 +10,7 @@ export class AuthMiddleware {
 
     // eslint-disable-next-line consistent-return
     public autenticate(req: Request, res: Response, next: NextFunction) {
-        const authHeader = req.headers.token as string;
+        const authHeader = req.headers.authorization as string;
         if (!authHeader) {
             return res.status(401).send({ erro: 'token não informado!' });
         }
