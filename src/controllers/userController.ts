@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { UserModel } from 'src/models/users';
+import { UserModel } from '../models/users';
 import { SignInInterface, UpdateUserInterface, UserSchemaInterface } from '../interfaces/user.interface';
 import { EnvConfigService } from '../configs/env.config';
 

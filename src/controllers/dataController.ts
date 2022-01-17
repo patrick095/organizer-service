@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { Model } from 'mongoose';
-import { initialDefaultObjects } from 'src/configs/default-objects.config';
-import { EnvConfigService } from 'src/configs/env.config';
-import { DataSchemaInterface } from 'src/interfaces/user.interface';
-import { DataModel } from 'src/models/data';
+import { initialDefaultObjects } from '../configs/default-objects.config';
+import { EnvConfigService } from '../configs/env.config';
+import { DataSchemaInterface } from '../interfaces/user.interface';
+import { DataModel } from '../models/data';
 
 export class DataController {
     public Data!: Model<DataSchemaInterface>;

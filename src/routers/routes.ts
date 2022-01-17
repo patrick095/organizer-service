@@ -1,9 +1,9 @@
 import { Models } from '@models/*';
 import express, { Request, Response } from 'express';
-import { EnvConfigService } from 'src/configs/env.config';
-import { DataController } from 'src/controllers/dataController';
-import { UserController } from 'src/controllers/userController';
-import { AuthMiddleware } from 'src/middlewares/auth.middleware';
+import { UserController } from '../controllers/userController';
+import { DataController } from '../controllers/dataController';
+import { AuthMiddleware } from '../middlewares/auth.middleware';
+import { EnvConfigService } from '../configs/env.config';
 
 export class Routes {
     private routes: express.Router;

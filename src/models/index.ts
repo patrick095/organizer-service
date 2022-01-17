@@ -1,4 +1,4 @@
-import { EnvConfigService } from 'src/configs/env.config';
+import { EnvConfigService } from '../configs/env.config';
 import { DataModel } from './data';
 import { UserModel } from './users';
 

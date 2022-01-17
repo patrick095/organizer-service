@@ -1,5 +1,5 @@
 import { Model, Schema } from 'mongoose';
-import { MongoDB } from 'src/database/mongo-db.database';
+import { MongoDB } from '../database/mongo-db.database';
 import { UserSchemaInterface } from '../interfaces/user.interface';
 
 export class UserModel extends MongoDB {
