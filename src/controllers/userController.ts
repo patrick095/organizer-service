@@ -81,6 +81,15 @@ export class UserController {
         return res.send({ response });
     }
 
+    public async validateUser(req: Request, res: Response) {
+        const { user } = req.query;
+        const User = await this.Users.findOne({ user });
+        if (!User) {
+            return res.status(400).json({ error: 'user not found' });
+        }
+        return res.status(200).send({ valid: 'User Registered' });
+    }
+
     private clearPrivateFields(user: UserSchemaInterface): UserSchemaInterface {
         const User = user;
         User.password = undefined;
