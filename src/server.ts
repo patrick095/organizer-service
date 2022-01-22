@@ -45,7 +45,7 @@ class Server {
     }
 
     private configureApp() {
-        this.app.use(cors());
+        this.app.use(cors({ origin: this.config.CorsOrigin, methods: ['GET', 'POST'] }));
         this.app.use(express.json());
     }
 

@@ -18,4 +18,8 @@ export default class EnvConfigService {
     public get bcryptSalt(): number {
         return Number(process.env.BCRYPT_SALT);
     }
+
+    public get CorsOrigin(): string {
+        return process.env.CORS_ORIGIN as string;
+    }
 }
