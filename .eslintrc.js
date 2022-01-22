@@ -3,19 +3,15 @@ module.exports = {
         es2021: true,
         node: true,
     },
-    extends: [
-        'airbnb-base',
-        'airbnb-typescript/base',
-    ],
+    extends: ['airbnb-base', 'airbnb-typescript/base'],
     parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.eslint.json',
+        files: ['*.ts'],
     },
     parser: '@typescript-eslint/parser',
-    plugins: [
-        '@typescript-eslint',
-    ],
+    plugins: ['@typescript-eslint'],
     rules: {
         'import/prefer-default-export': 'off',
         semi: ['error', 'always'],
@@ -31,5 +27,6 @@ module.exports = {
         'no-underscore-dangle': 'off',
         'lines-between-class-members': 'off',
         '@typescript-eslint/lines-between-class-members': 'off',
+        'object-curly-newline': 'off',
     },
 };

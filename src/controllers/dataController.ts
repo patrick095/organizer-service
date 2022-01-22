@@ -1,16 +1,10 @@
 import { Request, Response } from 'express';
 import { Model } from 'mongoose';
-import { initialDefaultObjects } from '../configs/default-objects.config';
-import { EnvConfigService } from '../configs/env.config';
-import { DataSchemaInterface } from '../interfaces/user.interface';
-import { DataModel } from '../models/data';
+import { initialDefaultObjects } from '@configs/default-objects.config';
+import { DataSchemaInterface } from '@interfaces/user.interface';
 
 export class DataController {
-    public Data!: Model<DataSchemaInterface>;
-
-    constructor(private dataModel: DataModel, private config: EnvConfigService) {
-        this.getDataModel();
-    }
+    constructor(private Data: Model<DataSchemaInterface>) {}
 
     public async getData(req: Request, res: Response) {
         const userId = req.body.userId as string;
@@ -40,9 +34,5 @@ export class DataController {
         };
         const newData = await this.Data.create(data);
         return newData;
-    }
-
-    private async getDataModel(): Promise<void> {
-        this.Data = await this.dataModel.register();
     }
 }

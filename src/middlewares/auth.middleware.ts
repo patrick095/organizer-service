@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { EnvConfigService } from '../configs/env.config';
+import EnvConfigService from '@configs/env.config';
 
 export class AuthMiddleware {
     private secret: string;

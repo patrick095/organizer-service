@@ -1,22 +1,18 @@
-import { Models } from '@models/*';
 import express, { Request, Response } from 'express';
-import { UserController } from '../controllers/userController';
-import { DataController } from '../controllers/dataController';
-import { AuthMiddleware } from '../middlewares/auth.middleware';
-import { EnvConfigService } from '../configs/env.config';
+import { UserController } from '@controllers/userController';
+import { DataController } from '@controllers/dataController';
+import { AuthMiddleware } from '@middlewares/auth.middleware';
 
-export class Routes {
+export default class Routes {
     private routes: express.Router;
     private authRoutes: express.Router;
-    private userController: UserController;
-    private dataController: DataController;
-    private authMiddleware: AuthMiddleware;
-    constructor(private models: Models, private config: EnvConfigService) {
+    constructor(
+        private userController: UserController,
+        private dataController: DataController,
+        private authMiddleware: AuthMiddleware,
+    ) {
         this.routes = express.Router();
         this.authRoutes = express.Router();
-        this.userController = new UserController(this.models.UserModel, this.config);
-        this.dataController = new DataController(this.models.DataModel, this.config);
-        this.authMiddleware = new AuthMiddleware(this.config);
     }
 
     public get default(): express.Router {

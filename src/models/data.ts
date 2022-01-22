@@ -1,9 +1,8 @@
-import { Model, Schema } from 'mongoose';
-import { MongoDB } from '../database/mongo-db.database';
-import { DataSchemaInterface } from '../interfaces/user.interface';
+import { Schema } from 'mongoose';
+import { DataSchemaInterface } from '@interfaces/user.interface';
 
-export class DataModel extends MongoDB {
-    public register(): Promise<Model<DataSchemaInterface>> {
+export class DataModel {
+    public register(): Schema<DataSchemaInterface> {
         const DataSchema = new Schema<DataSchemaInterface>({
             userId: {
                 type: String,
@@ -14,7 +13,6 @@ export class DataModel extends MongoDB {
                 default: [],
             },
         });
-
-        return this.connect().then((db) => db.model<DataSchemaInterface>('data', DataSchema));
+        return DataSchema;
     }
 }

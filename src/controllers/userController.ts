@@ -2,23 +2,18 @@ import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
-import { UserModel } from '../models/users';
-import { SignInInterface, UpdateUserInterface, UserSchemaInterface } from '../interfaces/user.interface';
-import { EnvConfigService } from '../configs/env.config';
+import EnvConfigService from '@configs/env.config';
+import { SignInInterface, UpdateUserInterface, UserSchemaInterface } from '@interfaces/user.interface';
 
 export class UserController {
     private secret: string;
-    private Users!: Model<UserSchemaInterface>;
     private salt: number;
+    private config: EnvConfigService;
 
-    constructor(private userModel: UserModel, private config: EnvConfigService) {
-        this.secret = this.config.Secret;
-        this.getUserModel();
+    constructor(private Users: Model<UserSchemaInterface>) {
+        this.config = new EnvConfigService();
         this.salt = this.config.bcryptSalt;
-    }
-
-    private async getUserModel(): Promise<void> {
-        this.Users = await this.userModel.register();
+        this.secret = this.config.Secret;
     }
 
     public async signin(req: Request, res: Response) {
@@ -28,7 +23,7 @@ export class UserController {
         if (!User) {
             return res.status(400).json({ error: 'invalid username or password' });
         }
-        if (!await bcrypt.compare(password, User.password as string)) {
+        if (!(await bcrypt.compare(password, User.password as string))) {
             return res.status(400).json({ error: 'invalid username or password' });
         }
 
@@ -39,7 +34,9 @@ export class UserController {
             savedSessions.splice(0, 1);
         }
         savedSessions.push(token);
-        const response = this.clearPrivateFields(await this.Users.findByIdAndUpdate(User._id, { sessions: savedSessions }) as UserSchemaInterface);
+        const response = this.clearPrivateFields(
+            (await this.Users.findByIdAndUpdate(User._id, { sessions: savedSessions })) as UserSchemaInterface,
+        );
         return res.status(200).json({ user: response, token });
     }
 
@@ -53,12 +50,14 @@ export class UserController {
             }
             const hash = bcrypt.hashSync(req.body.password, this.salt);
 
-            const user = this.clearPrivateFields(await this.Users.create({
-                name: req.body.name,
-                user: req.body.user,
-                email: req.body.email,
-                password: hash,
-            }));
+            const user = this.clearPrivateFields(
+                await this.Users.create({
+                    name: req.body.name,
+                    user: req.body.user,
+                    email: req.body.email,
+                    password: hash,
+                }),
+            );
             return res.send({
                 user,
                 token: this.generateToken(user.id),
@@ -69,15 +68,15 @@ export class UserController {
     }
 
     public async updateUser(req: Request, res: Response) {
-        const {
-            name, email, user, password,
-        } = req.body as UpdateUserInterface;
+        const { name, email, user, password } = req.body as UpdateUserInterface;
 
         const User = await this.Users.findOne({ user });
-        if (!User || !await bcrypt.compare(password, User.password as string)) {
+        if (!User || !(await bcrypt.compare(password, User.password as string))) {
             return res.status(400).json({ error: 'user not found' });
         }
-        const response = this.clearPrivateFields(await this.Users.findByIdAndUpdate(User.id, { name, email }, { new: true }) as UserSchemaInterface);
+        const response = this.clearPrivateFields(
+            (await this.Users.findByIdAndUpdate(User.id, { name, email }, { new: true })) as UserSchemaInterface,
+        );
         return res.send({ response });
     }
 

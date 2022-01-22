@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export class EnvConfigService {
+export default class EnvConfigService {
     public get Secret(): string {
         return process.env.SECRET as string;
     }

@@ -7,10 +7,11 @@
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules src/index.ts",
     "test": "jest",
     "start": "node dist/index.js",
-    "build": "tsc --build",
-    "postinstall": "npm run build",
-    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "npx eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "build": "npm run remove-dist && npm run lint && tsc --build && npm run fix-paths",
+    "lint": "eslint . --ext .js,.ts",
+    "lint:fix": "eslint . --ext .js,.ts --fix",
+    "remove-dist": "rm -rf dist",
+    "fix-paths": "tscpaths -p tsconfig.json -s ./src -o ./dist"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "eslint-plugin-import": "^2.25.4",
     "ts-node-dev": "^1.1.8",
     "tsconfig-paths": "^3.12.0",
+    "tscpaths": "^0.0.9",
     "typescript": "^4.5.4"
   },
   "dependencies": {
@@ -47,6 +49,7 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.6",
-    "require-dir": "^1.2.0"
+    "require-dir": "^1.2.0",
+    "rxjs": "^7.5.2"
   }
 }

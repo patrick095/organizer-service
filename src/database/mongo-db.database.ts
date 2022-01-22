@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { EnvConfigService } from '../configs/env.config';
+import EnvConfigService from '@configs/env.config';
 
 export class MongoDB {
     private MongoURL: string;
@@ -10,7 +10,7 @@ export class MongoDB {
     public async connect() {
         await mongoose.connect(this.MongoURL).then((connection) => {
             // eslint-disable-next-line no-console
-            console.log('MongoDB connected');
+            console.log('Database connected');
             return connection;
         });
         return mongoose;
