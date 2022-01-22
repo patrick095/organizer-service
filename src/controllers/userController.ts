@@ -86,16 +86,16 @@ export class UserController {
         if (user) {
             const User = await this.Users.findOne({ user });
             if (!User) {
-                return res.status(400).json({ error: 'user not found' });
+                return res.status(200).json({ valid: false });
             }
-            return res.status(200).send({ valid: 'User Registered' });
+            return res.status(200).send({ valid: true });
         }
         if (email) {
             const User = await this.Users.findOne({ email });
             if (!User) {
-                return res.status(400).json({ error: 'email not found' });
+                return res.status(200).json({ valid: false });
             }
-            return res.status(200).send({ valid: 'Email Registered' });
+            return res.status(200).send({ valid: true });
         }
 
         return res.status(400).json({ error: 'user or email not found' });
