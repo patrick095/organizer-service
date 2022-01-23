@@ -6,6 +6,10 @@ export const initialDefaultObjects = [
         type: 'card',
         date: new Date(),
         theme: 'default',
+        position: {
+            x: 0,
+            y: 0,
+        },
     },
     {
         id: '2',
@@ -14,5 +18,9 @@ export const initialDefaultObjects = [
         type: 'calendarMonth',
         date: new Date(),
         theme: 'default',
+        position: {
+            x: 0,
+            y: 0,
+        },
     },
 ];
