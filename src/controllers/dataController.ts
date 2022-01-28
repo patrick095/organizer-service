@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Model } from 'mongoose';
-import { initialDefaultObjects } from '@configs/default-objects.config';
 import { DataSchemaInterface } from '@interfaces/user.interface';
 
 export class DataController {
@@ -30,7 +29,6 @@ export class DataController {
     private async createData(userId: string) {
         const data = {
             userId,
-            objects: initialDefaultObjects,
         };
         const newData = await this.Data.create(data);
         return newData;

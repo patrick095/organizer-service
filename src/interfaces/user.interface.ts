@@ -10,6 +10,7 @@ export interface UpdateUserInterface {
     user: string;
     email: string;
     password: string;
+    newPassword: string;
 }
 
 export interface UserSchemaInterface extends Document {
@@ -18,10 +19,10 @@ export interface UserSchemaInterface extends Document {
     password?: string;
     email: string;
     sessions?: Array<string>;
-    theme?:{
+    theme?: {
         bgColor: string;
         fontColor: string;
-    }
+    };
 }
 
 export interface DataSchemaInterface extends Document {
@@ -36,4 +37,10 @@ export interface DataObject {
     type: string;
     date: Date;
     theme: string;
+    position: {
+        x: number;
+        y: number;
+    };
+    width?: number;
+    height?: number;
 }

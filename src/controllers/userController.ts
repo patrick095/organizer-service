@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import EnvConfigService from '@configs/env.config';
 import { SignInInterface, UpdateUserInterface, UserSchemaInterface } from '@interfaces/user.interface';
+import { emailRegexp } from '@configs/regex.config';
 
 export class UserController {
     private secret: string;
@@ -19,7 +20,13 @@ export class UserController {
     public async signin(req: Request, res: Response) {
         const { user, password } = req.body as SignInInterface;
 
-        const User = await this.Users.findOne({ user }).select('+password');
+        let User: UserSchemaInterface;
+        if (emailRegexp.test(user)) {
+            User = await this.Users.findOne({ email: user }).select('+password');
+        } else {
+            User = await this.Users.findOne({ user }).select('+password');
+        }
+
         if (!User) {
             return res.status(400).json({ error: 'invalid username or password' });
         }
@@ -41,26 +48,33 @@ export class UserController {
     }
 
     public async signup(req: Request, res: Response) {
+        const { name, email, user, password } = req.body as UserSchemaInterface;
         try {
-            if (await this.Users.findOne({ user: req.body.user })) {
+            if (!emailRegexp.test(email)) {
+                return res.status(400).json({ error: 'invalid email' });
+            }
+            if (password.length < 8) {
+                return res.status(400).json({ error: 'password must be at least 8 characters long' });
+            }
+            if (await this.Users.findOne({ user })) {
                 return res.json('user already in use');
             }
-            if (await this.Users.findOne({ email: req.body.email })) {
+            if (await this.Users.findOne({ email })) {
                 return res.json('email already in use');
             }
-            const hash = bcrypt.hashSync(req.body.password, this.salt);
+            const hash = bcrypt.hashSync(password, this.salt);
 
-            const user = this.clearPrivateFields(
+            const newUser = this.clearPrivateFields(
                 await this.Users.create({
-                    name: req.body.name,
-                    user: req.body.user,
-                    email: req.body.email,
+                    name,
+                    user,
+                    email,
                     password: hash,
                 }),
             );
             return res.send({
-                user,
-                token: this.generateToken(user.id),
+                user: newUser,
+                token: this.generateToken(newUser.id),
             });
         } catch (err) {
             return res.json({ error: 'error when registering' });
@@ -68,14 +82,24 @@ export class UserController {
     }
 
     public async updateUser(req: Request, res: Response) {
-        const { name, email, user, password } = req.body as UpdateUserInterface;
+        const { name, email, user, password, newPassword } = req.body as UpdateUserInterface;
 
+        if (!emailRegexp.test(email)) {
+            return res.status(400).json({ error: 'invalid email' });
+        }
         const User = await this.Users.findOne({ user });
         if (!User || !(await bcrypt.compare(password, User.password as string))) {
             return res.status(400).json({ error: 'user not found' });
         }
+        if (email !== User.email) {
+            return res.status(400).json({ error: 'invalid email or username' });
+        }
         const response = this.clearPrivateFields(
-            (await this.Users.findByIdAndUpdate(User.id, { name, email }, { new: true })) as UserSchemaInterface,
+            (await this.Users.findByIdAndUpdate(
+                User.id,
+                { name, password: newPassword },
+                { new: true },
+            )) as UserSchemaInterface,
         );
         return res.send({ response });
     }
