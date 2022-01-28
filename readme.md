@@ -6,7 +6,7 @@
 - Por enquanto todos os endpoints estão usando o método **POST**
 
 #### '/login'
-- Enviar o user e password no body da requisição para retornar as informações do usuário
+- Enviar o user e password no body da requisição para retornar as informações do usuário e o token
 
 #### '/cadastrar'
 - Enviar os dados para cadastrar no body da requisição e retorna os dados do usuário já cadastrado
