@@ -15,9 +15,9 @@
             "@models/*": ["models/*"],
             "@configs/*": ["configs/*"],
             "@middlewares/*": ["middlewares/*"],
-            "@database/*": ["database/*"],
+            "@repository/*": ["repository/*"],
             "@interfaces/*": ["interfaces/*"],
-            "@routes/*": ["routes/*"]
+            "@routers/*": ["routers/*"]
         },
         "esModuleInterop": true,
         "experimentalDecorators": true,
