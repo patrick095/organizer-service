@@ -2,24 +2,25 @@ import express from 'express';
 import cors from 'cors';
 import { Model } from 'mongoose';
 
+import { DataSchemaInterface, UserSchemaInterface } from '@interfaces/user.interface';
+
 import EnvConfigService from '@configs/env.config';
 import { UserController } from '@controllers/userController';
 import { DataController } from '@controllers/dataController';
 import { AuthMiddleware } from '@middlewares/auth.middleware';
-import Routes from './routers/routes';
-import database, { Database } from './database';
-import { DataSchemaInterface, UserSchemaInterface } from './interfaces/user.interface';
+import Routes from '@routers/routes';
+import { MongoDB } from '@repository/mongoDB';
 
 class Server {
     private app: express.Application;
-    private routes!: Routes;
     private config: EnvConfigService;
-    private db: Database;
+    private db: MongoDB;
+    private routes: Routes;
 
     constructor() {
-        this.config = new EnvConfigService();
-        this.db = database;
         this.app = express();
+        this.config = new EnvConfigService();
+        this.db = new MongoDB();
     }
 
     public async start() {
@@ -31,7 +32,7 @@ class Server {
 
     private async connectDatabase() {
         return new Promise((resolve) => {
-            this.db.database.subscribe((db) => {
+            this.db.getInstance().subscribe((db) => {
                 const UsersModel = db.model('users') as Model<UserSchemaInterface>;
                 const DataModel = db.model('data') as Model<DataSchemaInterface>;
                 this.routes = new Routes(
