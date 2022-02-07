@@ -4,11 +4,11 @@ dotenv.config();
 
 export default class EnvConfigService {
     public get Secret(): string {
-        return process.env.SECRET as string;
+        return process.env.SECRET.toString();
     }
 
-    public get MongoDBUrl(): string {
-        return process.env.MONGODB_URL as string;
+    public get MongoUri(): string {
+        return process.env.MONGODB_URI.toString();
     }
 
     public get Port(): number {
@@ -20,6 +20,10 @@ export default class EnvConfigService {
     }
 
     public get CorsOrigin(): string {
-        return process.env.CORS_ORIGIN as string;
+        return process.env.CORS_ORIGIN.toString();
+    }
+
+    public get isProduction(): boolean {
+        return process.env.NODE_ENV === 'production';
     }
 }

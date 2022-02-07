@@ -20,7 +20,11 @@ class Server {
     constructor() {
         this.app = express();
         this.config = new EnvConfigService();
-        this.db = new MongoDB();
+        if (this.config.isProduction) {
+            this.db = new MongoDB(this.config);
+        }
+        // @TODO alterar para TypeOrm ou outro ORM para poder rodar os testes
+        // em um banco de dados diferente SQLite (preferência typeorm ou sequelize)
     }
 
     public async start() {
