@@ -1,6 +1,12 @@
 # Service do Organzier-angular
 
-- Em fase de desenvolvimento inicial do projeto
+## Testes
+[![Test CI](https://github.com/patrick095/organizer-service/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/patrick095/organizer-service/actions/workflows/test.yml)
+[![Lint](https://github.com/patrick095/organizer-service/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/patrick095/organizer-service/actions/workflows/lint.yml)
+
+
+## Status do projeto�
+- Em fase inicial de desenvolvimento! (🚧⚠)
 
 ### endpoints
 - Por enquanto todos os endpoints estão usando o método **POST**
