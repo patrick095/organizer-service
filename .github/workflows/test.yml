@@ -21,6 +21,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: create env file
+      run: |
+        touch .env
+        echo PORT=${{ secrets.PORT }} >> .env
+        echo BCRYPT_SALT=${{ secrets.BCRYPT_SALT }} >> .env
+        echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
+        echo TYPEORM_URL=${{ secrets.TYPEORM_URL }} >> .env
+        echo TYPEORM_CONNECTION=${{ secrets.TYPEORM_CONNECTION }} >> .env
+        echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+        echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
+        echo SECRET=${{ secrets.SECRET }} >> .env
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
