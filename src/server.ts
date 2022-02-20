@@ -10,8 +10,10 @@ import { MongoDB } from '@repository/mongoDB';
 import { Users } from '@entity/users';
 import { Objects } from '@entity/data';
 import { SQLiteDB } from '@repository/sqlite';
+import { Server } from 'http';
 
-export class Server {
+export class App {
+    private server: Server;
     private app: express.Application;
     private db: MongoDB | SQLiteDB;
     private routes: Routes;
@@ -31,6 +33,10 @@ export class Server {
         this.configureRoutes();
         this.startListening();
         return this.app;
+    }
+
+    public getServer() {
+        return this.server;
     }
 
     private async connectDatabase() {
@@ -59,7 +65,7 @@ export class Server {
     }
 
     private startListening() {
-        this.app.listen(this.config.Port, () => {
+        this.server = this.app.listen(this.config.Port, () => {
             // eslint-disable-next-line no-console
             console.log(`Server started at port: ${this.config.Port}`);
         });

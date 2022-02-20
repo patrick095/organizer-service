@@ -1,6 +1,6 @@
 import EnvConfigService from '@configs/env.config';
-import { Server } from './server';
+import { App } from './server';
 
 const config = new EnvConfigService(process.env.NODE_ENV.toString());
-const app = new Server(config);
+const app = new App(config);
 app.start();

@@ -2,12 +2,18 @@ import 'jest';
 import * as express from 'express';
 import request from 'supertest';
 import IntegrationHelpers from '../helpers/integration-helpers';
+import { Server } from 'http';
 
 describe('Testando as funcionalidades de usuário', () => {
     let app: express.Application;
 
     beforeAll(async () => {
         app = await IntegrationHelpers.getApp();
+    });
+
+    afterAll(async () => {
+        const server = IntegrationHelpers.getServer();
+        server.close();
     });
 
     it('Deve criar um usuário', async () => {
