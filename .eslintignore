@@ -3,3 +3,5 @@ node_modules/*
 webpack.config.js
 coverage/**/*
 __tests__/**/*
+
+jest.config.js
