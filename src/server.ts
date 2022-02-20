@@ -8,7 +8,7 @@ import { AuthMiddleware } from '@middlewares/auth.middleware';
 import Routes from '@routers/routes';
 import { MongoDB } from '@repository/mongoDB';
 import { Users } from '@entity/users';
-import { Datas } from '@entity/data';
+import { Objects } from '@entity/data';
 
 class Server {
     private app: express.Application;
@@ -37,7 +37,7 @@ class Server {
         return new Promise((resolve) => {
             this.db.getInstance().subscribe((connection) => {
                 const UsersRepository = connection.getRepository(Users);
-                const DataRepository = connection.getRepository(Datas);
+                const DataRepository = connection.getRepository(Objects);
                 this.routes = new Routes(
                     new UserController(UsersRepository),
                     new DataController(DataRepository),

@@ -29,7 +29,7 @@ export interface DataSchemaInterface {
 }
 
 export interface DataObject {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     type: string;

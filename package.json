@@ -14,7 +14,7 @@
         "remove-dist": "rm -rf dist",
         "fix-paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
         "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-        "typeorm:migration": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:run"
+        "migration:run": "node --require ts-node/register ./node_modules/typeorm/cli.js migration:run"
     },
     "repository": {
         "type": "git",

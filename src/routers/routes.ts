@@ -32,8 +32,10 @@ export default class Routes {
         this.authRoutes.get('/', (req: Request, res: Response) => {
             res.send('unalthorized');
         });
-        this.authRoutes.post('/get-data', this.dataController.getData.bind(this.dataController));
-        this.authRoutes.post('/update-data', this.dataController.updateData.bind(this.dataController));
+        this.authRoutes.post('/get-objects', this.dataController.getObjects.bind(this.dataController));
+        this.authRoutes.post('/update-object', this.dataController.updateObject.bind(this.dataController));
+        this.authRoutes.post('/create-object', this.dataController.createNewObject.bind(this.dataController));
+        this.authRoutes.post('/delete-object', this.dataController.deleteObject.bind(this.dataController));
 
         return this.authRoutes;
     }

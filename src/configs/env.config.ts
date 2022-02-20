@@ -8,11 +8,11 @@ export default class EnvConfigService {
     }
 
     public get MongoUri(): string {
-        return process.env.MONGODB_URI.toString();
+        return process.env.TYPEORM_URL.toString();
     }
 
     public get MongoDBName(): string {
-        return process.env.MONGODB_NAME.toString();
+        return process.env.DB_NAME.toString();
     }
 
     public get Port(): number {

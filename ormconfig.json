@@ -1,8 +1,8 @@
 {
    "type": "mongodb",
-   "url": "mongodb+srv://admin:VSK33cm%402hkgAZL@cluster0.jiyct.mongodb.net",
    "database": "Organizer",
    "synchronize": true,
+   "useUnifiedTopology": true,
    "logging": false,
    "entities": [
       "src/entity/**/*.ts"
