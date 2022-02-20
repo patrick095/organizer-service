@@ -123,6 +123,24 @@ export class UserController {
         return res.status(400).json({ error: 'user or email not found' });
     }
 
+    public async deleteUser(req: Request, res: Response) {
+        const { user, email, password } = req.query as { user?: string; email?: string; password: string };
+        let UserDB: Users;
+        if (user) {
+            UserDB = await this.UsersRepository.findOne({ user });
+        }
+        if (email) {
+            UserDB = await this.UsersRepository.findOne({ email });
+        }
+        if (!UserDB || !(await bcrypt.compare(password, UserDB.password))) {
+            return res.status(400).json({ error: 'invalid username, email or password' });
+        }
+
+        await this.UsersRepository.delete(UserDB._id);
+
+        return res.status(200).json({ message: 'User deleted' });
+    }
+
     private clearPrivateFields(user: Users): Users {
         const UserDB = user;
         UserDB.password = undefined;
