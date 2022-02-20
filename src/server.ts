@@ -9,21 +9,20 @@ import Routes from '@routers/routes';
 import { MongoDB } from '@repository/mongoDB';
 import { Users } from '@entity/users';
 import { Objects } from '@entity/data';
+import { SQLiteDB } from '@repository/sqlite';
 
-class Server {
+export class Server {
     private app: express.Application;
-    private config: EnvConfigService;
-    private db: MongoDB;
+    private db: MongoDB | SQLiteDB;
     private routes: Routes;
 
-    constructor() {
+    constructor(private config: EnvConfigService) {
         this.app = express();
-        this.config = new EnvConfigService();
         if (this.config.isProduction) {
             this.db = new MongoDB(this.config);
+        } else {
+            this.db = new SQLiteDB(this.config);
         }
-        // @TODO alterar para TypeOrm ou outro ORM para poder rodar os testes
-        // em um banco de dados diferente SQLite (preferência typeorm ou sequelize)
     }
 
     public async start() {
@@ -31,6 +30,7 @@ class Server {
         this.configureApp();
         this.configureRoutes();
         this.startListening();
+        return this.app;
     }
 
     private async connectDatabase() {
@@ -65,4 +65,3 @@ class Server {
         });
     }
 }
-export default new Server();

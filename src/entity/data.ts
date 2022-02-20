@@ -3,7 +3,7 @@ import { Column, Entity, ObjectID as ObjectIDType, ObjectIdColumn } from 'typeor
 
 @Entity()
 export class Objects {
-    @ObjectIdColumn()
+    @ObjectIdColumn({ nullable: true, type: 'simple-json' })
     _id: ObjectIDType;
 
     @Column()
@@ -24,7 +24,7 @@ export class Objects {
     @Column()
     theme: string = 'default';
 
-    @Column()
+    @Column({ nullable: true, type: 'simple-json' })
     position: {
         x: number;
         y: number;
@@ -32,32 +32,4 @@ export class Objects {
         x: 0,
         y: 0,
     };
-
-    // @Column({ type: 'jsonb' })
-    // objects: Array<DataObject> = [
-    //     {
-    //         id: '1',
-    //         title: 'Novo Card',
-    //         description: 'Descrição do card',
-    //         type: 'card',
-    //         date: new Date(),
-    //         theme: 'default',
-    //         position: {
-    //             x: 0,
-    //             y: 0,
-    //         },
-    //     },
-    //     {
-    //         id: '2',
-    //         title: 'Novo Calendário',
-    //         description: 'Descrição do Calendário',
-    //         type: 'calendarMonth',
-    //         date: new Date(),
-    //         theme: 'default',
-    //         position: {
-    //             x: 0,
-    //             y: 0,
-    //         },
-    //     },
-    // ];
 }

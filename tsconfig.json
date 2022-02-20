@@ -24,5 +24,6 @@
         "emitDecoratorMetadata": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
-    }
+    },
+    "exclude": ["__tests__/**/*", "coverage/**/*", "node_modules/**/*", "dist/**/*", "jest.config.js"]
 }

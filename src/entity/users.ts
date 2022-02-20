@@ -18,10 +18,10 @@ export class Users {
     @Column()
     email: string;
 
-    @Column()
-    sessions: Array<string> = [];
+    @Column({ nullable: true, type: 'simple-json' })
+    sessions: Array<string>;
 
-    @Column()
+    @Column({ nullable: true, type: 'simple-json' })
     theme: Object = {
         bgColor: '#4266b9',
         fontColor: '#fff',

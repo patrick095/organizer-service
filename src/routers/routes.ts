@@ -23,7 +23,7 @@ export default class Routes {
         this.routes.post('/login', this.userController.signin.bind(this.userController));
         this.routes.post('/atualizar', this.userController.updateUser.bind(this.userController));
         this.routes.get('/validar', this.userController.validateUser.bind(this.userController));
-        this.routes.post('/delete-user', this.userController.deleteUser.bind(this.userController));
+        this.routes.post('/deletar-usuario', this.userController.deleteUser.bind(this.userController));
 
         return this.routes;
     }

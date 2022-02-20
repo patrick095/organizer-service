@@ -13,7 +13,7 @@ export class UserController {
     private config: EnvConfigService;
 
     constructor(private UsersRepository: Repository<Users>) {
-        this.config = new EnvConfigService();
+        this.config = new EnvConfigService('production');
         this.salt = this.config.bcryptSalt;
         this.secret = this.config.Secret;
     }
@@ -42,9 +42,9 @@ export class UserController {
         }
         savedSessions.push(token);
         UserDB.sessions = savedSessions;
-        await this.UsersRepository.update(UserDB._id, UserDB);
-        UserDB.password = undefined;
-        const response = this.clearPrivateFields(UserDB);
+        const savedUser = await this.UsersRepository.save({ ...UserDB });
+        savedUser.password = undefined;
+        const response = this.clearPrivateFields(savedUser);
         return res.status(200).json({ user: response, token });
     }
 
@@ -96,11 +96,16 @@ export class UserController {
         if (email !== UserDB.email) {
             return res.status(400).json({ error: 'invalid email or username' });
         }
-        UserDB.password = bcrypt.hashSync(newPassword, this.salt);
+        if (newPassword) {
+            UserDB.password = bcrypt.hashSync(newPassword, this.salt);
+        }
         UserDB.name = name;
-        await this.UsersRepository.update(UserDB._id, UserDB);
-        const response = this.clearPrivateFields(UserDB);
-        return res.send({ response });
+        const savedUser = await this.UsersRepository.save({ ...UserDB });
+
+        if (savedUser) {
+            return res.status(200).json({ user: this.clearPrivateFields(savedUser) });
+        }
+        return res.json({ error: 'error when updating user' });
     }
 
     public async validateUser(req: Request, res: Response) {
@@ -124,14 +129,10 @@ export class UserController {
     }
 
     public async deleteUser(req: Request, res: Response) {
-        const { user, email, password } = req.query as { user?: string; email?: string; password: string };
-        let UserDB: Users;
-        if (user) {
-            UserDB = await this.UsersRepository.findOne({ user });
-        }
-        if (email) {
-            UserDB = await this.UsersRepository.findOne({ email });
-        }
+        const { user, password } = req.body as { user: string; password: string };
+
+        const UserDB = await this.UsersRepository.findOne({ user });
+
         if (!UserDB || !(await bcrypt.compare(password, UserDB.password))) {
             return res.status(400).json({ error: 'invalid username, email or password' });
         }

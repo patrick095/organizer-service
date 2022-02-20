@@ -20,7 +20,6 @@ export class DataController {
         const { userId, object } = req.body as { userId: string; object: DataObject };
 
         const ObjectDB = await this.DataRepository.findOne({ _id: new ObjectID(object._id) });
-
         if (ObjectDB.userId !== userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
