@@ -12,7 +12,7 @@
         "baseUrl": "src",
         "paths": {
             "@controllers/*": ["controllers/*"],
-            "@models/*": ["models/*"],
+            "@entity/*": ["entity/*"],
             "@configs/*": ["configs/*"],
             "@middlewares/*": ["middlewares/*"],
             "@repository/*": ["repository/*"],
@@ -24,5 +24,6 @@
         "emitDecoratorMetadata": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
-    }
+    },
+    "exclude": ["__tests__/**/*", "coverage/**/*", "node_modules/**/*", "dist/**/*", "jest.config.js"]
 }

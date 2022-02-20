@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import EnvConfigService from '@configs/env.config';
 import { Connection, createConnection } from 'typeorm';
 
-export class MongoDB {
+export class SQLiteDB {
     private connection: Observable<Connection>;
 
     constructor(private config: EnvConfigService) {}
@@ -12,15 +12,14 @@ export class MongoDB {
         if (!this.connection) {
             this.connection = new Observable((observer) => {
                 createConnection({
-                    type: 'mongodb',
-                    url: this.config.MongoUri,
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
+                    type: 'sqlite',
                     entities: [`${__dirname}/../entity/*.{ts,js}`],
-                    database: this.config.MongoDBName,
+                    database: './__tests__/db.sqlite',
+                    migrations: [`${__dirname}/../migration/*.{ts,js}`],
+                    synchronize: true,
                 }).then(async (connection) => {
                     // eslint-disable-next-line no-console
-                    console.log('MongoDB connected');
+                    console.log('SQLite connected');
                     observer.next(connection);
                     observer.complete();
                 });

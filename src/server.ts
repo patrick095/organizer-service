@@ -1,8 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { Model } from 'mongoose';
-
-import { DataSchemaInterface, UserSchemaInterface } from '@interfaces/user.interface';
 
 import EnvConfigService from '@configs/env.config';
 import { UserController } from '@controllers/userController';
@@ -10,21 +7,22 @@ import { DataController } from '@controllers/dataController';
 import { AuthMiddleware } from '@middlewares/auth.middleware';
 import Routes from '@routers/routes';
 import { MongoDB } from '@repository/mongoDB';
+import { Users } from '@entity/users';
+import { Objects } from '@entity/data';
+import { SQLiteDB } from '@repository/sqlite';
 
-class Server {
+export class Server {
     private app: express.Application;
-    private config: EnvConfigService;
-    private db: MongoDB;
+    private db: MongoDB | SQLiteDB;
     private routes: Routes;
 
-    constructor() {
+    constructor(private config: EnvConfigService) {
         this.app = express();
-        this.config = new EnvConfigService();
         if (this.config.isProduction) {
             this.db = new MongoDB(this.config);
+        } else {
+            this.db = new SQLiteDB(this.config);
         }
-        // @TODO alterar para TypeOrm ou outro ORM para poder rodar os testes
-        // em um banco de dados diferente SQLite (preferência typeorm ou sequelize)
     }
 
     public async start() {
@@ -32,16 +30,17 @@ class Server {
         this.configureApp();
         this.configureRoutes();
         this.startListening();
+        return this.app;
     }
 
     private async connectDatabase() {
         return new Promise((resolve) => {
-            this.db.getInstance().subscribe((db) => {
-                const UsersModel = db.model('users') as Model<UserSchemaInterface>;
-                const DataModel = db.model('data') as Model<DataSchemaInterface>;
+            this.db.getInstance().subscribe((connection) => {
+                const UsersRepository = connection.getRepository(Users);
+                const DataRepository = connection.getRepository(Objects);
                 this.routes = new Routes(
-                    new UserController(UsersModel),
-                    new DataController(DataModel),
+                    new UserController(UsersRepository),
+                    new DataController(DataRepository),
                     new AuthMiddleware(this.config),
                 );
                 resolve(true);
@@ -66,4 +65,3 @@ class Server {
         });
     }
 }
-export default new Server();

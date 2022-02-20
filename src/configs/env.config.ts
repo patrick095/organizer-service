@@ -3,12 +3,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default class EnvConfigService {
+    constructor(private env: string) {}
+
     public get Secret(): string {
         return process.env.SECRET.toString();
     }
 
     public get MongoUri(): string {
-        return process.env.MONGODB_URI.toString();
+        return process.env.TYPEORM_URL.toString();
+    }
+
+    public get MongoDBName(): string {
+        return process.env.DB_NAME.toString();
     }
 
     public get Port(): number {
@@ -24,6 +30,6 @@ export default class EnvConfigService {
     }
 
     public get isProduction(): boolean {
-        return process.env.NODE_ENV === 'production';
+        return this.env === 'production';
     }
 }

@@ -1,5 +1,3 @@
-import { Document } from 'mongoose';
-
 export interface SignInInterface {
     user: string;
     password: string;
@@ -13,7 +11,7 @@ export interface UpdateUserInterface {
     newPassword: string;
 }
 
-export interface UserSchemaInterface extends Document {
+export interface UserSchemaInterface {
     name: string;
     user: string;
     password?: string;
@@ -25,13 +23,13 @@ export interface UserSchemaInterface extends Document {
     };
 }
 
-export interface DataSchemaInterface extends Document {
+export interface DataSchemaInterface {
     userId: string;
     objects: Array<DataObject>;
 }
 
 export interface DataObject {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     type: string;
