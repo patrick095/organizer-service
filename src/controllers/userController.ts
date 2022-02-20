@@ -1,17 +1,18 @@
-import { Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import EnvConfigService from '@configs/env.config';
 import { SignInInterface, UpdateUserInterface, UserSchemaInterface } from '@interfaces/user.interface';
 import { emailRegexp } from '@configs/regex.config';
+import { Users } from 'entity/users';
+import { Repository } from 'typeorm';
 
 export class UserController {
     private secret: string;
     private salt: number;
     private config: EnvConfigService;
 
-    constructor(private Users: Model<UserSchemaInterface>) {
+    constructor(private UsersRepository: Repository<Users>) {
         this.config = new EnvConfigService();
         this.salt = this.config.bcryptSalt;
         this.secret = this.config.Secret;
@@ -20,30 +21,30 @@ export class UserController {
     public async signin(req: Request, res: Response) {
         const { user, password } = req.body as SignInInterface;
 
-        let User: UserSchemaInterface;
+        let UserDB: Users;
         if (emailRegexp.test(user)) {
-            User = await this.Users.findOne({ email: user }).select('+password');
+            UserDB = await this.UsersRepository.findOne({ email: user });
         } else {
-            User = await this.Users.findOne({ user }).select('+password');
+            UserDB = await this.UsersRepository.findOne({ user });
         }
 
-        if (!User) {
+        if (!UserDB) {
             return res.status(400).json({ error: 'invalid username or password' });
         }
-        if (!(await bcrypt.compare(password, User.password as string))) {
+        if (!(await bcrypt.compare(password, UserDB.password))) {
             return res.status(400).json({ error: 'invalid username or password' });
         }
 
-        User.password = undefined;
-        const token = this.generateToken(User._id);
-        const savedSessions = User.sessions || [];
+        const token = this.generateToken(UserDB._id);
+        const savedSessions = UserDB.sessions || [];
         if (savedSessions.length >= 10) {
             savedSessions.splice(0, 1);
         }
         savedSessions.push(token);
-        const response = this.clearPrivateFields(
-            (await this.Users.findByIdAndUpdate(User._id, { sessions: savedSessions })) as UserSchemaInterface,
-        );
+        UserDB.sessions = savedSessions;
+        await this.UsersRepository.update(UserDB._id, UserDB);
+        UserDB.password = undefined;
+        const response = this.clearPrivateFields(UserDB);
         return res.status(200).json({ user: response, token });
     }
 
@@ -56,25 +57,26 @@ export class UserController {
             if (password.length < 8) {
                 return res.status(400).json({ error: 'password must be at least 8 characters long' });
             }
-            if (await this.Users.findOne({ user })) {
+            if (await this.UsersRepository.findOne({ user })) {
                 return res.json('user already in use');
             }
-            if (await this.Users.findOne({ email })) {
+            if (await this.UsersRepository.findOne({ email })) {
                 return res.json('email already in use');
             }
             const hash = bcrypt.hashSync(password, this.salt);
 
             const newUser = this.clearPrivateFields(
-                await this.Users.create({
+                await this.UsersRepository.save({
                     name,
                     user,
                     email,
                     password: hash,
+                    sessions: [],
                 }),
             );
             return res.send({
                 user: newUser,
-                token: this.generateToken(newUser.id),
+                token: this.generateToken(newUser._id),
             });
         } catch (err) {
             return res.json({ error: 'error when registering' });
@@ -87,36 +89,32 @@ export class UserController {
         if (!emailRegexp.test(email)) {
             return res.status(400).json({ error: 'invalid email' });
         }
-        const User = await this.Users.findOne({ user });
-        if (!User || !(await bcrypt.compare(password, User.password as string))) {
-            return res.status(400).json({ error: 'user not found' });
+        const UserDB = await this.UsersRepository.findOne({ user });
+        if (!UserDB || !(await bcrypt.compare(password, UserDB.password as string))) {
+            return res.status(400).json({ error: 'UserDB not found' });
         }
-        if (email !== User.email) {
+        if (email !== UserDB.email) {
             return res.status(400).json({ error: 'invalid email or username' });
         }
-        const response = this.clearPrivateFields(
-            (await this.Users.findByIdAndUpdate(
-                User.id,
-                { name, password: newPassword },
-                { new: true },
-            )) as UserSchemaInterface,
-        );
+        UserDB.password = bcrypt.hashSync(newPassword, this.salt);
+        UserDB.name = name;
+        await this.UsersRepository.update(UserDB._id, UserDB);
+        const response = this.clearPrivateFields(UserDB);
         return res.send({ response });
     }
 
     public async validateUser(req: Request, res: Response) {
-        const { user, email } = req.query;
-
+        const { user, email } = req.query as { user?: string; email?: string };
         if (user) {
-            const User = await this.Users.findOne({ user });
-            if (!User) {
+            const UserDB = await this.UsersRepository.findOne({ user });
+            if (!UserDB) {
                 return res.status(200).json({ valid: false });
             }
             return res.status(200).send({ valid: true });
         }
         if (email) {
-            const User = await this.Users.findOne({ email });
-            if (!User) {
+            const UserDB = await this.UsersRepository.findOne({ email });
+            if (!UserDB) {
                 return res.status(200).json({ valid: false });
             }
             return res.status(200).send({ valid: true });
@@ -125,11 +123,11 @@ export class UserController {
         return res.status(400).json({ error: 'user or email not found' });
     }
 
-    private clearPrivateFields(user: UserSchemaInterface): UserSchemaInterface {
-        const User = user;
-        User.password = undefined;
-        User.sessions = undefined;
-        return User;
+    private clearPrivateFields(user: Users): Users {
+        const UserDB = user;
+        UserDB.password = undefined;
+        UserDB.sessions = undefined;
+        return UserDB;
     }
 
     private generateToken(id: string) {

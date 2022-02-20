@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import EnvConfigService from '@configs/env.config';
 
 export class AuthMiddleware {
@@ -25,7 +25,7 @@ export class AuthMiddleware {
             return res.status(401).send({ erro: 'token mal formado!' });
         }
 
-        jwt.verify(token, this.secret, (err, decoded) => {
+        jwt.verify(token, this.secret, (err, decoded: JwtPayload) => {
             if (err) {
                 return res.status(401).send({ erro: 'token inválido!' });
             }

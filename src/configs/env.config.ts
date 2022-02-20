@@ -11,6 +11,10 @@ export default class EnvConfigService {
         return process.env.MONGODB_URI.toString();
     }
 
+    public get MongoDBName(): string {
+        return process.env.MONGODB_NAME.toString();
+    }
+
     public get Port(): number {
         return Number(process.env.PORT);
     }

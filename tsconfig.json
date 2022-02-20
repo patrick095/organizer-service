@@ -12,7 +12,7 @@
         "baseUrl": "src",
         "paths": {
             "@controllers/*": ["controllers/*"],
-            "@models/*": ["models/*"],
+            "@entity/*": ["entity/*"],
             "@configs/*": ["configs/*"],
             "@middlewares/*": ["middlewares/*"],
             "@repository/*": ["repository/*"],

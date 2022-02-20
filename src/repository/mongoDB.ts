@@ -1,24 +1,27 @@
-import mongoose from 'mongoose';
 import { Observable } from 'rxjs';
 
 import EnvConfigService from '@configs/env.config';
-import { DataModel } from '@models/data';
-import { UserModel } from '@models/users';
+import { Connection, createConnection } from 'typeorm';
 
 export class MongoDB {
-    private connection: Observable<typeof import('mongoose')>;
-    private DataModel: DataModel = new DataModel();
-    private UserModel: UserModel = new UserModel();
+    private connection: Observable<Connection>;
 
     constructor(private config: EnvConfigService) {}
 
-    public getInstance(): Observable<typeof import('mongoose')> {
+    public getInstance(): Observable<Connection> {
         if (!this.connection) {
             this.connection = new Observable((observer) => {
-                mongoose.connect(this.config.MongoUri).then((db) => {
-                    db.model('users', this.UserModel.register());
-                    db.model('data', this.DataModel.register());
-                    observer.next(db);
+                createConnection({
+                    type: 'mongodb',
+                    url: this.config.MongoUri,
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                    entities: [`${__dirname}/../entity/*.{ts,js}`],
+                    database: this.config.MongoDBName,
+                }).then(async (connection) => {
+                    // eslint-disable-next-line no-console
+                    console.log('MongoDB connected');
+                    observer.next(connection);
                     observer.complete();
                 });
             });
