@@ -1,6 +1,7 @@
 # Service do Organzier-angular
 
-## Testes
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test CI](https://github.com/patrick095/organizer-service/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/patrick095/organizer-service/actions/workflows/test.yml)
 [![Lint](https://github.com/patrick095/organizer-service/actions/workflows/lint.yml/badge.svg?branch=master)](https://github.com/patrick095/organizer-service/actions/workflows/lint.yml)
 
