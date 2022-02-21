@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules src/index.ts",
-        "test": "jest --detectOpenHandles --coverage",
+        "test": "jest --detectOpenHandles --ci --coverage",
         "start": "node dist/index.js",
         "build": "npm run remove-dist && npm run lint && tsc --build && npm run fix-paths",
         "build-windows": "npm run lint && tsc --build && npm run fix-paths",
