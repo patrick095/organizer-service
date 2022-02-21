@@ -42,7 +42,7 @@ export class UserController {
         }
         savedSessions.push(token);
         UserDB.sessions = savedSessions;
-        await this.UsersRepository.save({ ...UserDB });
+        await this.UsersRepository.update(UserDB._id, UserDB);
         const response = this.clearPrivateFields(UserDB);
         return res.status(200).json({ user: response, token });
     }
