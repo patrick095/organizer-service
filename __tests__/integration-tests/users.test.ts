@@ -2,7 +2,6 @@ import 'jest';
 import * as express from 'express';
 import request from 'supertest';
 import IntegrationHelpers from '../helpers/integration-helpers';
-import { Server } from 'http';
 
 describe('Testando as funcionalidades de usuário', () => {
     let app: express.Application;
