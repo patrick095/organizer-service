@@ -39,3 +39,8 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: npm run test
+    
+    - name: Generating coverage badges
+      uses: jpb06/jest-badges-action@latest
+        with:
+          branches: master
