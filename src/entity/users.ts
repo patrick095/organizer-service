@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ObjectID, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Users {
     @PrimaryGeneratedColumn()
-    _id: string;
+    _id: ObjectID | string;
 
     @Column()
     name: string;

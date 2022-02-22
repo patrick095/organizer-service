@@ -10,10 +10,8 @@ import { Repository } from 'typeorm';
 export class UserController {
     private secret: string;
     private salt: number;
-    private config: EnvConfigService;
 
-    constructor(private UsersRepository: Repository<Users>) {
-        this.config = new EnvConfigService('production');
+    constructor(private UsersRepository: Repository<Users>, private config: EnvConfigService) {
         this.salt = this.config.bcryptSalt;
         this.secret = this.config.Secret;
     }
@@ -35,14 +33,14 @@ export class UserController {
             return res.status(400).json({ error: 'invalid username or password' });
         }
 
-        const token = this.generateToken(UserDB._id);
+        const token = this.generateToken(UserDB._id.toString());
         const savedSessions = UserDB.sessions || [];
         if (savedSessions.length >= 10) {
             savedSessions.splice(0, 1);
         }
         savedSessions.push(token);
         UserDB.sessions = savedSessions;
-        await this.UsersRepository.update(UserDB._id, UserDB);
+        await this.UsersRepository.update({ _id: UserDB._id }, UserDB);
         const response = this.clearPrivateFields(UserDB);
         return res.status(200).json({ user: response, token });
     }
@@ -75,7 +73,7 @@ export class UserController {
             );
             return res.send({
                 user: newUser,
-                token: this.generateToken(newUser._id),
+                token: this.generateToken(newUser._id.toString()),
             });
         } catch (err) {
             return res.json({ error: 'error when registering' });
@@ -99,10 +97,10 @@ export class UserController {
             UserDB.password = bcrypt.hashSync(newPassword, this.salt);
         }
         UserDB.name = name;
-        const savedUser = await this.UsersRepository.save({ ...UserDB });
+        const savedUser = await this.UsersRepository.update({ _id: UserDB._id }, UserDB);
 
-        if (savedUser) {
-            return res.status(200).json({ user: this.clearPrivateFields(savedUser) });
+        if (savedUser.affected) {
+            return res.status(200).json({ user: this.clearPrivateFields(UserDB) });
         }
         return res.json({ error: 'error when updating user' });
     }

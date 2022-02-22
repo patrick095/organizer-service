@@ -8,7 +8,7 @@ import { AuthMiddleware } from '@middlewares/auth.middleware';
 import Routes from '@routers/routes';
 import { MongoDB } from '@repository/mongoDB';
 import { Users } from '@entity/users';
-import { Objects } from '@entity/data';
+import { Objects } from '@entity/objects';
 import { SQLiteDB } from '@repository/sqlite';
 import { Server } from 'http';
 
@@ -45,7 +45,7 @@ export class App {
                 const UsersRepository = connection.getRepository(Users);
                 const DataRepository = connection.getRepository(Objects);
                 this.routes = new Routes(
-                    new UserController(UsersRepository),
+                    new UserController(UsersRepository, this.config),
                     new DataController(DataRepository),
                     new AuthMiddleware(this.config),
                 );

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import { DataObject } from '@interfaces/user.interface';
-import { Objects } from 'entity/data';
+import { Objects } from '@entity/objects';
 import { Repository } from 'typeorm';
 import { ObjectID } from 'mongodb';
+import { ObjectInterface, ObjectsTypeInterface } from '@interfaces/objects.interface';
+import { newEmptyCalendar, newEmptyCard } from '@configs/newObjects';
 
 export class DataController {
     constructor(private DataRepository: Repository<Objects>) {}
@@ -11,15 +12,16 @@ export class DataController {
         const userId = req.body.userId as string;
         let objects = await this.DataRepository.find({ userId });
         if (!objects.length) {
-            objects = [await this.createObject(userId)];
+            objects = [await this.createObject(userId, 'card'), await this.createObject(userId, 'calendar')];
         }
         return res.status(200).json({ objects });
     }
 
     public async updateObject(req: Request, res: Response) {
-        const { userId, object } = req.body as { userId: string; object: DataObject };
+        const { userId, object } = req.body as { userId: string; object: ObjectInterface };
 
-        const ObjectDB = await this.DataRepository.findOne({ _id: new ObjectID(object._id) });
+        const ObjectDB = (await this.DataRepository.findOne({ _id: new ObjectID(object._id) }))
+            ?? (await this.DataRepository.findOne({ _id: object._id }));
         if (ObjectDB.userId !== userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
@@ -33,15 +35,18 @@ export class DataController {
         ObjectDB.title = object.title;
         ObjectDB.position = object.position;
         ObjectDB.theme = object.theme;
-        await this.DataRepository.update(ObjectDB._id, ObjectDB);
+        await this.DataRepository.update({ _id: ObjectDB._id }, ObjectDB);
         return res.status(200).json(ObjectDB);
     }
 
     public async createNewObject(req: Request, res: Response) {
-        const { userId, object } = req.body as { userId: string; object: DataObject };
+        const { userId, object } = req.body as { userId: string; object: ObjectInterface };
 
-        const newObject = await this.DataRepository.save({ ...object, userId });
-        return res.status(200).json(newObject);
+        if (typeof object === typeof Objects) {
+            const newObject = await this.DataRepository.save({ ...object, userId });
+            return res.status(200).json(newObject);
+        }
+        return res.status(400).json({ error: 'invalid object' });
     }
 
     public async deleteObject(req: Request, res: Response) {
@@ -61,11 +66,14 @@ export class DataController {
         return res.status(200).json({ message: 'Object deleted' });
     }
 
-    private async createObject(userId: string) {
-        const object = {
-            userId,
-        };
-        const newObject = await this.DataRepository.save(object);
-        return newObject;
+    private async createObject(userId: string, type: ObjectsTypeInterface) {
+        let newObject: ObjectInterface;
+        if (type === 'card') {
+            newObject = newEmptyCard(userId);
+        } else {
+            newObject = newEmptyCalendar(userId);
+        }
+        const obj = await this.DataRepository.save(newObject);
+        return obj;
     }
 }
