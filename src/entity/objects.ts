@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/indent */
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectID, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Objects {
-    @ObjectIdColumn({ nullable: true, type: 'simple-json' })
+    @PrimaryGeneratedColumn()
     _id: ObjectID | string;
 
     @Column()

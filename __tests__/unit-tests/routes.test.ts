@@ -1,7 +1,6 @@
-import express from 'express';
 import Routes from '../../src/routers/routes';
 import { UserController } from '../../src/controllers/userController';
-import { DataController } from '../../src/controllers/dataController';
+import { ObjectController } from '../../src/controllers/objectController';
 import { AuthMiddleware } from '../../src/middlewares/auth.middleware';
 import { SQLiteDB } from '../../src/repository/sqlite';
 import EnvConfigService from '../../src/configs/env.config';
@@ -20,7 +19,7 @@ describe('Deve testar as rotas da aplicação', () => {
                 const DataRepository = connection.getRepository(Objects);
                 routes = new Routes(
                     new UserController(UsersRepository, config),
-                    new DataController(DataRepository),
+                    new ObjectController(DataRepository),
                     new AuthMiddleware(config),
                 );
                 connection.close();

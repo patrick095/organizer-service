@@ -3,7 +3,7 @@ import cors from 'cors';
 
 import EnvConfigService from '@configs/env.config';
 import { UserController } from '@controllers/userController';
-import { DataController } from '@controllers/dataController';
+import { ObjectController } from '@controllers/objectController';
 import { AuthMiddleware } from '@middlewares/auth.middleware';
 import Routes from '@routers/routes';
 import { MongoDB } from '@repository/mongoDB';
@@ -43,10 +43,10 @@ export class App {
         return new Promise((resolve) => {
             this.db.getInstance().subscribe((connection) => {
                 const UsersRepository = connection.getRepository(Users);
-                const DataRepository = connection.getRepository(Objects);
+                const ObjectRepository = connection.getRepository(Objects);
                 this.routes = new Routes(
                     new UserController(UsersRepository, this.config),
-                    new DataController(DataRepository),
+                    new ObjectController(ObjectRepository),
                     new AuthMiddleware(this.config),
                 );
                 resolve(true);

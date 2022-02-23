@@ -141,16 +141,66 @@ describe('Testando as funcionalidades de usuário', () => {
         expect(response.body.user.email).toBe(user.email);
     });
 
+    it('Deve tentar atualizar o nome e a senha do usuário com email inválido', async () => {
+        const user = {
+            name: 'Teste Atualizado',
+            user: 'teste',
+            password: 'Teste1234',
+            email: 'teste',
+            newPassword: 'Teste12345',
+        };
+        const response = await request(app).post('/atualizar').send(user);
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('invalid email');
+    });
+
+    it('Deve tentar atualizar o nome e a senha do usuário com usuário inválido', async () => {
+        const user = {
+            name: 'Teste Atualizado',
+            user: 'teste2',
+            password: 'Teste1234',
+            email: 'teste@test.com',
+            newPassword: 'Teste12345',
+        };
+        const response = await request(app).post('/atualizar').send(user);
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('user not found');
+    });
+
+    it('Deve tentar atualizar o nome e a senha do usuário com email diferente', async () => {
+        const user = {
+            name: 'Teste Atualizado',
+            user: 'teste',
+            password: 'Teste1234',
+            email: 'teste@teste2.com',
+            newPassword: 'Teste12345',
+        };
+        const response = await request(app).post('/atualizar').send(user);
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('invalid email or username');
+    });
+
     it('Deve logar o usuário com a nova senha', async () => {
         const user = {
             user: 'teste',
             password: 'Teste1234',
         };
         const response = await request(app).post('/login').send(user);
+        token = response.body.token;
         expect(response.status).toBe(200);
         expect(response.body.user.name).toBe('Teste Atualizado');
         expect(response.body.user.user).toBe('teste');
         expect(response.body.token.length).toBeGreaterThan(0);
+    });
+
+    it('Deve testar as rotas que imprimem "unaltorized"', async () => {
+        const response = await request(app).get('/');
+        expect(response.text).toBe('unalthorized');
+
+        const response2 = await request(app)
+            .get('/auth/')
+            .set({ Authorization: `Bearer ${token}` });
+        expect(response2.text).toBe('unalthorized');
     });
 
     it('Deve validar se o usuário já existe com usuário existente', async () => {
@@ -201,15 +251,5 @@ describe('Testando as funcionalidades de usuário', () => {
         const response = await request(app).post('/deletar-usuario').send(user);
         expect(response.status).toBe(400);
         expect(response.body.error).toBe('invalid username, email or password');
-    });
-
-    it('Deve testar as rotas que imprimem "unaltorized"', async () => {
-        const response = await request(app).get('/');
-        expect(response.text).toBe('unalthorized');
-
-        const response2 = await request(app)
-            .get('/auth/')
-            .set({ Authorization: `Bearer ${token}` });
-        expect(response2.text).toBe('unalthorized');
     });
 });

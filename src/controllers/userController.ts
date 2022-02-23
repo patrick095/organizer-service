@@ -88,7 +88,7 @@ export class UserController {
         }
         const UserDB = await this.UsersRepository.findOne({ user });
         if (!UserDB || !(await bcrypt.compare(password, UserDB.password as string))) {
-            return res.status(400).json({ error: 'UserDB not found' });
+            return res.status(400).json({ error: 'user not found' });
         }
         if (email !== UserDB.email) {
             return res.status(400).json({ error: 'invalid email or username' });

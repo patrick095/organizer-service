@@ -5,7 +5,7 @@ import { ObjectID } from 'mongodb';
 import { ObjectInterface, ObjectsTypeInterface } from '@interfaces/objects.interface';
 import { newEmptyCalendar, newEmptyCard } from '@configs/newObjects';
 
-export class DataController {
+export class ObjectController {
     constructor(private DataRepository: Repository<Objects>) {}
 
     public async getObjects(req: Request, res: Response) {
@@ -36,25 +36,26 @@ export class DataController {
         ObjectDB.position = object.position;
         ObjectDB.theme = object.theme;
         await this.DataRepository.update({ _id: ObjectDB._id }, ObjectDB);
-        return res.status(200).json(ObjectDB);
+        return res.status(200).json({ object: ObjectDB });
     }
 
     public async createNewObject(req: Request, res: Response) {
         const { userId, object } = req.body as { userId: string; object: ObjectInterface };
 
-        if (typeof object === typeof Objects) {
+        if (object) {
             const newObject = await this.DataRepository.save({ ...object, userId });
-            return res.status(200).json(newObject);
+            return res.status(200).json({ object: newObject });
         }
         return res.status(400).json({ error: 'invalid object' });
     }
 
     public async deleteObject(req: Request, res: Response) {
-        const { userId, objectId } = req.body as { userId: string; objectId: string };
+        const { userId, object } = req.body as { userId: string; object: ObjectInterface };
 
-        const ObjectDB = await this.DataRepository.findOne({ _id: new ObjectID(objectId) });
+        const ObjectDB = (await this.DataRepository.findOne({ _id: new ObjectID(object._id) }))
+            ?? (await this.DataRepository.findOne({ _id: object._id }));
 
-        if (ObjectDB.userId !== userId) {
+        if (ObjectDB && ObjectDB.userId.toString() !== userId.toString()) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
 
