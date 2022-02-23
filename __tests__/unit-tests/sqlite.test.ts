@@ -7,8 +7,8 @@ describe('Deve testar a criação de um banco de dados SQLite', () => {
         await new Promise((resolve) => {
             const db = new SQLiteDB(new EnvConfigService('test'));
             db.getInstance().subscribe((connection: Connection) => {
-                expect(connection).toBeInstanceOf(Connection);
                 connection.close();
+                expect(connection).toBeInstanceOf(Connection);
                 resolve(true);
             });
         });

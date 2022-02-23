@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { UserController } from '@controllers/userController';
-import { DataController } from '@controllers/dataController';
+import { ObjectController } from '@controllers/objectController';
 import { AuthMiddleware } from '@middlewares/auth.middleware';
 
 export default class Routes {
@@ -8,7 +8,7 @@ export default class Routes {
     private authRoutes: express.Router;
     constructor(
         private userController: UserController,
-        private dataController: DataController,
+        private objectController: ObjectController,
         private authMiddleware: AuthMiddleware,
     ) {
         this.routes = express.Router();
@@ -33,10 +33,10 @@ export default class Routes {
         this.authRoutes.get('/', (req: Request, res: Response) => {
             res.send('unalthorized');
         });
-        this.authRoutes.post('/create-object', this.dataController.createNewObject.bind(this.dataController));
-        this.authRoutes.post('/get-objects', this.dataController.getObjects.bind(this.dataController));
-        this.authRoutes.post('/update-object', this.dataController.updateObject.bind(this.dataController));
-        this.authRoutes.post('/delete-object', this.dataController.deleteObject.bind(this.dataController));
+        this.authRoutes.post('/create-object', this.objectController.createNewObject.bind(this.objectController));
+        this.authRoutes.post('/get-objects', this.objectController.getObjects.bind(this.objectController));
+        this.authRoutes.post('/update-object', this.objectController.updateObject.bind(this.objectController));
+        this.authRoutes.post('/delete-object', this.objectController.deleteObject.bind(this.objectController));
 
         return this.authRoutes;
     }

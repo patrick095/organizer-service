@@ -13,5 +13,5 @@ module.exports = {
         '^@routers/(.*)$': '<rootDir>/src/routers/$1',
     },
     modulePathIgnorePatterns: ['<rootDir>/__tests__/helpers'],
-    coverageReporters: ['json-summary'],
+    coverageReporters: ['json-summary', 'html'],
 };

@@ -1,4 +1,4 @@
-import { Objects } from '../../src/entity/data';
+import { Objects } from '../../src/entity/objects';
 import { Users } from '../../src/entity/users';
 
 describe('Deve testar as entidades do banco de dados', () => {

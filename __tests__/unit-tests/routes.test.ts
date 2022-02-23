@@ -1,12 +1,11 @@
-import express from 'express';
 import Routes from '../../src/routers/routes';
 import { UserController } from '../../src/controllers/userController';
-import { DataController } from '../../src/controllers/dataController';
+import { ObjectController } from '../../src/controllers/objectController';
 import { AuthMiddleware } from '../../src/middlewares/auth.middleware';
 import { SQLiteDB } from '../../src/repository/sqlite';
 import EnvConfigService from '../../src/configs/env.config';
 import { Users } from '../../src/entity/users';
-import { Objects } from '../../src/entity/data';
+import { Objects } from '../../src/entity/objects';
 
 describe('Deve testar as rotas da aplicação', () => {
     let routes: Routes;
@@ -19,8 +18,8 @@ describe('Deve testar as rotas da aplicação', () => {
                 const UsersRepository = connection.getRepository(Users);
                 const DataRepository = connection.getRepository(Objects);
                 routes = new Routes(
-                    new UserController(UsersRepository),
-                    new DataController(DataRepository),
+                    new UserController(UsersRepository, config),
+                    new ObjectController(DataRepository),
                     new AuthMiddleware(config),
                 );
                 connection.close();
