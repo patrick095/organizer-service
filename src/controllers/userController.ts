@@ -55,10 +55,10 @@ export class UserController {
                 return res.status(400).json({ error: 'password must be at least 8 characters long' });
             }
             if (await this.UsersRepository.findOne({ user })) {
-                return res.json('user already in use');
+                return res.json({ message: 'user already in use' });
             }
             if (await this.UsersRepository.findOne({ email })) {
-                return res.json('email already in use');
+                return res.json({ message: 'email already in use' });
             }
             const hash = bcrypt.hashSync(password, this.salt);
 
