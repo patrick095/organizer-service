@@ -12,22 +12,22 @@ export class AuthMiddleware {
     public autenticate(req: Request, res: Response, next: NextFunction) {
         const authHeader = req.headers.authorization as string;
         if (!authHeader) {
-            return res.status(401).send({ erro: 'token não informado!' });
+            return res.status(401).json({ erro: 'token não informado!' });
         }
 
         const parts = authHeader.split(' ');
         if (parts.length !== 2) {
-            return res.status(401).send({ erro: 'token incompleto!' });
+            return res.status(401).json({ erro: 'token incompleto!' });
         }
         const [scheme, token] = parts;
 
         if (!/^Bearer$/i.test(scheme)) {
-            return res.status(401).send({ erro: 'token mal formado!' });
+            return res.status(401).json({ erro: 'token mal formado!' });
         }
 
         jwt.verify(token, this.secret, (err, decoded: JwtPayload) => {
             if (err) {
-                return res.status(401).send({ erro: 'token inválido!' });
+                return res.status(401).json({ erro: 'token inválido!' });
             }
             req.body.userId = decoded?.id;
             return next();

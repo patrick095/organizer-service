@@ -10,7 +10,7 @@ export function newEmptyCard(userId: string): ObjectInterface {
             x: 0,
             y: 0,
         },
-        theme: '#ffffff',
+        theme: 'default',
         userId,
     };
 }
@@ -25,7 +25,7 @@ export function newEmptyCalendar(userId: string): ObjectInterface {
             x: 0,
             y: 0,
         },
-        theme: '#ffffff',
+        theme: 'default',
         userId,
     };
 }

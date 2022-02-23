@@ -7,8 +7,8 @@ describe('Deve testar a conexão com banco de dados mongoDB fornecido no env', (
         await new Promise((resolve) => {
             const db = new MongoDB(new EnvConfigService('production'));
             db.getInstance().subscribe((connection: Connection) => {
-                expect(connection).toBeInstanceOf(Connection);
                 connection.close();
+                expect(connection).toBeInstanceOf(Connection);
                 resolve(true);
             });
         });

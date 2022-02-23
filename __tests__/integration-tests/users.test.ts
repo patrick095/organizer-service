@@ -5,6 +5,7 @@ import IntegrationHelpers from '../helpers/integration-helpers';
 
 describe('Testando as funcionalidades de usuário', () => {
     let app: express.Application;
+    let token: string;
 
     beforeAll(async () => {
         app = await IntegrationHelpers.getApp();
@@ -23,6 +24,7 @@ describe('Testando as funcionalidades de usuário', () => {
             password: 'Teste123',
         };
         const response = await request(app).post('/cadastrar').send(user);
+        token = response.body.token;
         expect(response.status).toBe(200);
         expect(response.body.user.name).toBe(user.name);
         expect(response.body.user.user).toBe(user.user);
@@ -78,5 +80,15 @@ describe('Testando as funcionalidades de usuário', () => {
         const response = await request(app).post('/deletar-usuario').send(user);
         expect(response.status).toBe(200);
         expect(response.body.message).toBe('User deleted');
+    });
+
+    it('Deve testar as rotas que imprimem "unaltorized"', async () => {
+        const response = await request(app).get('/');
+        expect(response.text).toBe('unalthorized');
+
+        const response2 = await request(app)
+            .get('/auth/')
+            .set({ Authorization: `Bearer ${token}` });
+        expect(response2.text).toBe('unalthorized');
     });
 });
