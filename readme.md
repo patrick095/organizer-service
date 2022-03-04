@@ -13,8 +13,8 @@
 ![Statements](./badges/coverage-statements.svg)
 
 
-## Status do projeto�
-- Em fase inicial de desenvolvimento! (🚧⚠)
+## Status do projeto
+- Em desenvolvimento! (🚧⚠)
 
 ### endpoints
 - Por enquanto todos os endpoints estão usando o método **POST**
