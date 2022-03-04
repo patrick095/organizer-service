@@ -28,11 +28,7 @@ jobs:
               with:
                   node-version: 16
                   cache: 'npm'
-
-            - name: install dependencies
             - run: npm ci
-
-            - name: run tests
             - run: npm run test
 
             - name: Generating coverage badges
