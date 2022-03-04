@@ -3,11 +3,31 @@ import { emailRegexp } from '../../src/configs/regex.config';
 import { newEmptyCard, newEmptyCalendar } from '../../src/configs/newObjects';
 
 describe('Deve testar as configurações do projeto', () => {
-    test('Deve retornar os valores de configuração Test', () => {
+    test('Deve retornar os valores de configuração de produção', () => {
+        const config = new EnvConfigService('production');
+        expect(config.Port).toBe(3000);
+        expect(config.isProduction).toBe(true);
+        expect(config.CorsOrigin).toBe('*');
+    });
+
+    test('Deve retornar os valores de configuração de teste', () => {
         const config = new EnvConfigService('test');
         expect(config.Port).toBe(3000);
         expect(config.isProduction).toBe(false);
         expect(config.CorsOrigin).toBe('*');
+        expect(config.MongoDBName).toBe('Organizer');
+    });
+
+    test('Deve retornar os valores padrões sem o env', () => {
+        process.env = undefined;
+        const config = new EnvConfigService('test');
+        expect(config.Port).toBe(3000);
+        expect(config.isProduction).toBe(false);
+        expect(config.CorsOrigin).toBe('*');
+        expect(config.Secret).toBe('secret');
+        expect(config.MongoUri).toBe('mongodb://localhost:27017/test');
+        expect(config.MongoDBName).toBe('Organizer');
+        expect(config.bcryptSalt).toBe(10);
     });
 
     test('Deve testar os regex que estão na configuração', () => {

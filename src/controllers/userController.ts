@@ -34,7 +34,7 @@ export class UserController {
         }
 
         const token = this.generateToken(UserDB._id.toString());
-        const savedSessions = UserDB.sessions || [];
+        const savedSessions = UserDB.sessions;
         if (savedSessions.length >= 10) {
             savedSessions.splice(0, 1);
         }
