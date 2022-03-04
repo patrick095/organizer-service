@@ -1,3 +1,5 @@
+import { ObjectInterface } from './objects.interface';
+
 export interface SignInInterface {
     user: string;
     password: string;
@@ -25,20 +27,5 @@ export interface UserSchemaInterface {
 
 export interface DataSchemaInterface {
     userId: string;
-    objects: Array<DataObject>;
-}
-
-export interface DataObject {
-    _id: string;
-    title: string;
-    description: string;
-    type: string;
-    date: Date;
-    theme: string;
-    position: {
-        x: number;
-        y: number;
-    };
-    width?: number;
-    height?: number;
+    objects: Array<ObjectInterface>;
 }

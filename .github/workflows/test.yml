@@ -1,46 +1,37 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Integração/Unitários
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    push:
+        branches: '**'
+    pull_request:
+        branches: '**'
 
 jobs:
-  build:
+    build:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: create env file
+              run: |
+                  touch .env
+                  echo PORT=${{ secrets.PORT }} >> .env
+                  echo BCRYPT_SALT=${{ secrets.BCRYPT_SALT }} >> .env
+                  echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
+                  echo TYPEORM_URL=${{ secrets.TYPEORM_URL }} >> .env
+                  echo TYPEORM_CONNECTION=${{ secrets.TYPEORM_CONNECTION }} >> .env
+                  echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+                  echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
+                  echo SECRET=${{ secrets.SECRET }} >> .env
+            - name: setup Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 16
+                  cache: 'npm'
+            - run: npm ci
+            - run: npm run test
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: create env file
-      run: |
-        touch .env
-        echo PORT=${{ secrets.PORT }} >> .env
-        echo BCRYPT_SALT=${{ secrets.BCRYPT_SALT }} >> .env
-        echo CORS_ORIGIN=${{ secrets.CORS_ORIGIN }} >> .env
-        echo TYPEORM_URL=${{ secrets.TYPEORM_URL }} >> .env
-        echo TYPEORM_CONNECTION=${{ secrets.TYPEORM_CONNECTION }} >> .env
-        echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-        echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
-        echo SECRET=${{ secrets.SECRET }} >> .env
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm i
-    - run: npm run test
-    
-    - name: Generating coverage badges
-      uses: jpb06/jest-badges-action@latest
-      with:
-        branches: master
+            - name: Generating coverage badges
+              uses: jpb06/jest-badges-action@latest
+              with:
+                  branches: masters
