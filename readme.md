@@ -14,7 +14,7 @@
 
 
 ## Status do projeto
-- Em desenvolvimento! (🚧⚠)
+- Em desenvolvimento! 🚧
 
 ### endpoints
 - Por enquanto todos os endpoints estão usando o método **POST**
